@@ -253,29 +253,14 @@ def main():
     col1, col2, col3 = st.columns(3)
     
     with col1:
-        st.markdown(f"""
-        <div class="stat-card">
-            <div class="value">{len(data):,}</div>
-            <div class="label">Individus dans la base</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.metric(label="Individus dans la base", value=f"{len(data):,}")
     
     with col2:
-        st.markdown(f"""
-        <div class="stat-card">
-            <div class="value">{data['union'].mean():.1%}</div>
-            <div class="label">Taux d'union</div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.metric(label="Taux d'union", value=f"{data['union'].mean():.1%}")
     
     with col3:
-        age_moyen = data[data['union']==1]['duree'].mean()
-        st.markdown(f"""
-        <div class="stat-card">
-            <div class="value">{age_moyen:.1f} ans</div>
-            <div class="label">Âge moyen à l'union</div>
-        </div>
-        """, unsafe_allow_html=True)
+        age_moyen = data[data['union'] == 1]['duree'].mean()
+        st.metric(label="Âge moyen à l'union", value=f"{age_moyen:.1f} ans")
     
     st.divider()
     
@@ -313,36 +298,20 @@ def main():
         st.markdown("## Résultats de la prédiction")
         
         cols = st.columns(4)
-        colors = ["#007A5E", "#FCD116", "#CE1126", "#6c757d"]
         for i, (age_val, prob) in enumerate(probs.items()):
             with cols[i]:
-                st.markdown(f"""
-                <div class="stat-card" style="border-bottom-color: {colors[i]};">
-                    <div class="value" style="font-size:1.3rem;">{prob:.1%}</div>
-                    <div class="label">Probabilité à {age_val} ans</div>
-                </div>
-                """, unsafe_allow_html=True)
+                st.metric(label=f"Probabilité à {age_val} ans", value=f"{prob:.1%}")
         
         # Interprétation
         prob_30 = probs[30]
         if prob_30 > 0.5:
-            prob_class = "prob-high"
             interpretation = "Probabilité élevée de ne pas être en union à 30 ans"
         elif prob_30 > 0.25:
-            prob_class = "prob-moderate"
             interpretation = "Probabilité modérée de ne pas être en union à 30 ans"
         else:
-            prob_class = "prob-low"
             interpretation = "Probabilité faible de ne pas être en union à 30 ans"
         
-        st.markdown(f"""
-        <div class="result-box">
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
-                <span style="font-size: 1rem; font-weight: 500;">Interprétation :</span>
-                <span class="{prob_class}">{interpretation}</span>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown(f"**Interprétation :** {interpretation}")
         
         # Courbe de survie
         st.markdown("### Courbe de survie prédite")
